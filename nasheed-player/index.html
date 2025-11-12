@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nur al-Qalb</title>
+  <script src="https://kit.fontawesome.com/d2ce3a069a.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.1/css/all.min.css"
+    crossorigin="anonymous" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Jost:wght@100;200;300;400;500;700&family=Montserrat&family=Roboto:wght@300;400;700&family=Ubuntu:wght@500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="shortcut icon" href="images/Faviconn.png" type="image/x-icon">
+</head>
+
+<body>
+  
+
+  <!-- Clerk Authentication Script -->
+  <script async crossorigin="anonymous"
+    data-clerk-publishable-key="pk_test_ZmFzdC10cm91dC0yNi5jbGVyay5hY2NvdW50cy5kZXYk"
+    src="https://fast-trout-26.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js" type="text/javascript">
+    </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const waitForClerk = setInterval(() => {
+        if (window.Clerk) {
+          clearInterval(waitForClerk);
+          Clerk.load().then(() => {
+            if (!Clerk.user) {
+              // Redirect to Clerk-hosted sign-in page
+              Clerk.redirectToSignIn({ redirectUrl: window.location.href });
+            }
+          });
+        }
+      }, 100);
+    });
+  </script>
+
+
+  <div class="main_div">
+    <div class="music_container">
+      <h2 id="title">Allah Knows</h2>
+      <h3 id="artist">Zain Bhikha</h3>
+
+      <div class="img_container">
+        <img src="images/Nasheed.png" alt="Nasheed cover" />
+      </div>
+
+      <audio src="music/music-1.mp3"></audio>
+
+      <!-- Progress bar -->
+      <div class="progressbar_container" id="progress_container">
+        <div class="progress_duration_meter">
+          <div id="current_time">0:00</div>
+          <div id="duration">0:00</div>
+        </div>
+        <div class="progress_div" id="progress_div">
+          <div class="progress" id="progress"></div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="music_controls">
+        <i class="fas fa-backward" id="prev" title="Previous"></i>
+        <i class="fas fa-play main_button" id="play" title="Play"></i>
+        <i class="fas fa-forward" id="next" title="Next"></i>
+      </div>
+    </div>
+  </div>
+
+
+ <script>
+    // DOM refs (do not reassign these)
+    const music = document.querySelector("audio");
+    const img = document.querySelector("img");
+    const play = document.getElementById("play");
+    const artistEl = document.getElementById("artist");
+    const titleEl = document.getElementById("title");
+    const prevBtn = document.getElementById("prev");
+    const nextBtn = document.getElementById("next");
+    const durationElement = document.getElementById("duration");
+    const progress = document.getElementById("progress");
+    const progress_div = document.getElementById("progress_div");
+    const current_time = document.getElementById("current_time");
+
+    // Songs array (The COMPLETE list of 125 nasheeds - Reordered to match your list)
+    const songs = [
+      { name: "'A Omar Esa - My Nabi ft. Nadeem Mohammed and Mo Khan (Official Nasheed Video)", title: "My Nabi", artist: "Omar Esa", image: "images/Nasheed.png" },
+      { name: "'Dearest Pyaareh Nabi' Official Nasheed Video by Omar Esa", title: "Dearest Pyaareh Nabi", artist: "Omar Esa", image: "images/Nasheed.png" },
+      { name: "'The Story of Taif' Official Nasheed Video by Omar Esa", title: "The Story of Taif", artist: "Omar Esa", image: "images/Nasheed.png" },
+      { name: "'Ya Rabbi' Official Nasheed Video by Omar Esa", title: "Ya Rabbi", artist: "Omar Esa", image: "images/Nasheed.png" },
+      { name: "01. A Time To Please Allah", title: "A Time To Please Allah", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "02. Allah is Calling You", title: "Allah is Calling You", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "03. Allahu Allah", title: "Allahu Allah", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "04. Every Morning", title: "Every Morning", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "05. Palestine", title: "Palestine", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "06. Qad Kafani Ilmu Rabbi", title: "Qad Kafani Ilmu Rabbi", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "07. Surah Al-Fatiha", title: "Surah Al-Fatiha", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "08. The Greatest Gift", title: "The Greatest Gift", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "09. Mesut Kurtis feat. Sami Yusuf - Burdah (Bonus)", title: "Burdah (Bonus)", artist: "Mesut Kurtis feat. Sami Yusuf", image: "images/Nasheed.png" },
+      { name: "09. The Path Of A Traveller", title: "The Path Of A Traveller", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "10. Together We Pray", title: "Together We Pray", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "11. Ya Rabbi Bil Mustafa", title: "Ya Rabbi Bil Mustafa", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "A Longing Person - Sad nasheed - Eng Sub", title: "A Longing Person", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "Abdullah-Al-Jarallah-Ahmad-Al-Nafis-Fy-hb", title: "Fiya Hubbun", artist: "Abdullah-Al-Jarallah-Ahmad-Al-Nafis-Fy-hb", image: "images/Nasheed.png" },
+      { name: "Adele - Hello (Muslim Version by Omar Esa)", title: "Hello (Muslim Version)", artist: "Omar Esa", image: "images/Nasheed.png" },
+      { name: "Ahmad Hussain - Ya Taiba", title: "Ya Taiba", artist: "Ahmad Hussain", image: "images/Nasheed.png" },
+      { name: "Ahmed Bukhatir - Ya Adheeman", title: "Ya Adheeman", artist: "Ahmed Bukhatir", image: "images/Nasheed.png" },
+      { name: "Ahmed Bukhatir - Ya Akhi (My Brother) __ ___", title: "Ya Akhi (My Brother)", artist: "Ahmed Bukhatir", image: "images/Nasheed.png" },
+      { name: "Al Ardu Nasheed", title: "Al Ardu", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "Al Hamdulillah - Beautiful Nasheed Thanks To Allah", title: "Al Hamdulillah", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "Al Hayat - Ahmed Al Muqit  Best Arabic Nasheed  الحياة - أحمد المقيط  (Eng Subs)", title: "Al Hayat", artist: "Ahmed Al Muqit", image: "images/Nasheed.png" },
+      { name: "Al Madeena  Beautiful Arabic Nasheed  - Al Madeena  Beautiful Arabic Nasheed ", title: "Al Madeena", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "Arrows of Yesterday - Castillo Nasheeds", title: "Arrows of Yesterday", artist: "Castillo", image: "images/Nasheed.png" },
+      { name: "Asma ul Husna by Labbayk  Voice Only Nasheed  Gratitude Album", title: "Asma ul Husna", artist: "Labbayk", image: "images/Nasheed.png" },
+      { name: "Baraa-Masoud-Love-and-Life-_-Vocals-Only-براء-مسعود-حب-وحياة-_-بدون-موسيقى-192-kbps", title: "Love-and-Life", artist: "Baraa Masoud", image: "images/Nasheed.png" },
+      { name: "Barakallah Nasheed By Maher Zain (No Music) Only Vocals HD 1080P", title: "Barakallah (No Music)", artist: "Maher Zain", image: "images/Nasheed.png" },
+      { name: "Be Happy - Motivational Nasheed - Othman Al Ibrahim", title: "Be Happy", artist: "Othman Al Ibrahim", image: "images/Nasheed.png" },
+      { name: "Beats of Happiness - Eid Nasheed", title: "Beats of Happiness", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "Beautiful Arabic Nasheed - Hoor al Ayn", title: "Hoor al Ayn", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "Enta Malaak (Ekaa) by Mohammed Alomari", title: "Enta Malaak (Ekaa)", artist: "Mohammed Alomari", image: "images/Nasheed.png" },
+      { name: "Farhat al amr - Anas Dosari", title: "Farhat al amr", artist: "Anas Dosari", image: "images/Nasheed.png" },
+      { name: "Fartaqi by Ahmed Bukhatir", title: "Fartaqi", artist: "Ahmed Bukhatir", image: "images/Nasheed.png" },
+      { name: "Forgive Me - Mind Blowing Nasheed", title: "Forgive Me", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "Fortunate Is He", title: "Fortunate Is He", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "Ghuraba (The Strangers) Exclusive New Version - Nasheed", title: "Ghuraba (The Strangers)", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "Hayatiz Zulli", title: "Hayatiz Zulli", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "Here I Am Allah - Beautiful Nasheed", title: "Here I Am Allah", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "I Seek Protection By Muhammad Al-Muqit", title: "I Seek Protection", artist: "Muhammad Al-Muqit", image: "images/Nasheed.png" },
+      { name: "Kamal Uddin-His Name is Muhammad", title: "His Name is Muhammad", artist: "Kamal Uddin", image: "images/Nasheed.png" },
+      { name: "Khaled Siddique - Home (Official Nasheed Video)", title: "Home", artist: "Khaled Siddique", image: "images/Nasheed.png" },
+      { name: "Khaled Siddique - My Love (Official Nasheed Video)", title: "My Love", artist: "Khaled Siddique", image: "images/Nasheed.png" },
+      { name: "Khalid Bin Walid the best nasheed", title: "Khalid Bin Walid", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "Labbayk - Rabbana", title: "Rabbana", artist: "Labbayk", image: "images/Nasheed.png" },
+      { name: "Labbayk Allah Voice Only Beautiful Nasheed @ by Labbayk @ Gratitude Album", title: "Labbayk Allah (Voice Only)", artist: "Labbayk", image: "images/Nasheed.png" },
+      { name: "Light of Guidance - Nasheed By Muhammad al Muqit", title: "Light of Guidance", artist: "Muhammad al Muqit", image: "images/Nasheed.png" },
+      { name: "Loyalty Nasheed by Muhammad al Muqit", title: "Loyalty", artist: "Muhammad al Muqit", image: "images/Nasheed.png" },
+      { name: "Ma al Qamar {Eng subtitles} - مع القمر- محمد المقيط - Muhammad Al-Muqit", title: "Ma al Qamar", artist: "Muhammad Al-Muqit", image: "images/Nasheed.png" },
+      { name: "Maher Zain - Allahi Allah Kiya Karo - Vocals Only Version (No Music)", title: "Allahi Allah Kiya Karo (Vocals Only)", artist: "Maher Zain", image: "images/Nasheed.png" },
+      { name: "Maher Zain - Always Be There - Vocals Only Version (No Music)", title: "Always Be There (Vocals Only)", artist: "Maher Zain", image: "images/Nasheed.png" },
+      { name: "Maher Zain - Insha Allah - English - Vocals Only Version (No Music)", title: "Insha Allah (Vocals Only)", artist: "Maher Zain", image: "images/Nasheed.png" },
+      { name: "Maher Zain - Mawlaya - Vocals Only Version (No Music)", title: "Mawlaya (Vocals Only)", artist: "Maher Zain", image: "images/Nasheed.png" },
+      { name: "Maher Zain - So Soon - Vocals Only Version (No Music)", title: "So Soon (Vocals Only)", artist: "Maher Zain", image: "images/Nasheed.png" },
+      { name: "Maher Zain - Ya Nabi Salam Alayka (International Version) l Vocals Only (No Music)", title: "Ya Nabi Salam Alayka (Vocals Only)", artist: "Maher Zain", image: "images/Nasheed.png" },
+      { name: "Matir Bari - Ehsaan Tahmid - O My Lord (Bangla)", title: "Matir Bari - Ehsaan Tahmid", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "Mawlaya Salli - Omar Esa - Official Nasheed Video", title: "Mawlaya Salli", artist: "Omar Esa", image: "images/Nasheed.png" },
+      { name: "Mishari Rashid Al Afasy - Rahman", title: "Rahman", artist: "Mishari Rashid Al Afasy", image: "images/Nasheed.png" },
+      { name: "Mountains-of-friendship", title: "Mountains of friendship", artist: "Muhammad al Muqit", image: "images/Nasheed.png" },
+      { name: "Muhammad al Muq - Tabsirah (Arabic Nasheed)", title: "Tabsirah", artist: "Muhammad al Muq", image: "images/Nasheed.png" },
+      { name: "Muhammad al Muqit - Benevolent Rain", title: "Benevolent Rain", artist: "Muhammad al Muqit", image: "images/Nasheed.png" },
+      { name: "Muhammad al Muqit - I Am Resistant", title: "I Am Resistant", artist: "Muhammad al Muqit", image: "images/Nasheed.png" },
+      { name: "Muhammad al Muqit - I Rise", title: "I Rise", artist: "Muhammad al Muqit", image: "images/Nasheed.png" },
+      { name: "Muhammad al Muqit - My Hope (Allah) Nasheed", title: "My Hope (Allah)", artist: "Muhammad al Muqit", image: "images/Nasheed.png" },
+      { name: "Muhammad al Muqit - My Messenger", title: "My Messenger", artist: "Muhammad al Muqit", image: "images/Nasheed.png" },
+      { name: "Muhammad al Muqit - Welcome", title: "Welcome", artist: "Muhammad al Muqit", image: "images/Nasheed.png" },
+      { name: "Muhammad_al_Muqit_-_Wedding", title: "Wedding Nasheed", artist: "Muhammad al Muqit", image: "images/Nasheed.png" },
+      { name: "munshid Muhammad Al-Muqit- New taweel al shawq-Long Longing HD", title: "New taweel al shawq - Long Longing", artist: "Muhammad Al-Muqit", image: "images/Nasheed.png" },
+      // --- Items reordered to match your list (music-1, music-2, ... music-12) ---
+      { name: "music-1", title: "Allah Knows", artist: "Zain Bhikha", image: "images/Nasheed.png" },
+      { name: "music-2", title: "Thanks To Allah", artist: "Zain Bhikha", image: "images/Nasheed.png" },
+      { name: "music-3", title: "Alameen", artist: "Maher Zain", image: "images/Nasheed.png" },
+      { name: "music-4", title: "Muhammad Nabina", artist: "Ayisha Abdul Basith", image: "images/Nasheed.png" },
+      { name: "music-5", title: "Ya Taiba", artist: "Ayisha Abdul Basith", image: "images/Nasheed.png" },
+      { name: "music-6", title: "Beauty Existence", artist: "Ahmed Bukhatir", image: "images/Nasheed.png" },
+      { name: "music-7", title: "Raqqat Aina", artist: "Maher Zain", image: "images/Nasheed.png" },
+      { name: "music-8", title: "Banda-E-Aasi", artist: "Syed Hassan Ullah Hussaini", image: "images/Nasheed.png" },
+      { name: "music-9", title: "Fida-e-Haideri", artist: "Amjad Baltistani", image: "images/Nasheed.png" },
+      { name: "music-10", title: "Way of The Tears", artist: "Muhammad al Muqit", image: "images/Nasheed.png" },
+      { name: "music-11", title: "Taweel Alshawq", artist: "Ahmed Bukhatir", image: "images/Nasheed.png" },
+      { name: "music-12", title: "My Hope (Allah)", artist: "Muhammad al Muqit", image: "images/Nasheed.png" },
+      // --- End of reordered section ---
+      { name: "My Arabic Language - Nasheed By Muhammad al Muqit", title: "My Arabic Language", artist: "Muhammad al Muqit", image: "images/Nasheed.png" },
+      { name: "My Complaint Is To Allah - Muhammad al-Muqit - Nasheed", title: "My Complaint Is To Allah", artist: "Muhammad al Muqit", image: "images/Nasheed.png" },
+      { name: "My Dream - Short Nasheed By- Muhammad al Muqit", title: "My Dream (Short)", artist: "Muhammad al Muqit", image: "images/Nasheed.png" },
+      { name: "MY LORD - Short Nasheed", title: "MY LORD (Short)", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "My Lords Knowledge - Beautiful Soothing Nasheed by Muhammad al Muqit", title: "My Lords Knowledge", artist: "Muhammad al Muqit", image: "images/Nasheed.png" },
+      { name: "Nadeem Mohammed -  By Allah (Official Acapella Video)", title: "By Allah", artist: "Nadeem Mohammed", image: "images/Nasheed.png" },
+      { name: "Nadeem Mohammed - Ar-Rahman (Nasheed)", title: "Ar-Rahman", artist: "Nadeem Mohammed", image: "images/Nasheed.png" },
+      { name: "Nadeem Mohammed - Believer (Nasheed)", title: "Believer", artist: "Nadeem Mohammed", image: "images/Nasheed.png" },
+      { name: "Nadeem Mohammed - Catch Me When I Fall", title: "Catch Me When I Fall", artist: "Nadeem Mohammed", image: "images/Nasheed.png" },
+      { name: "Nadeem Mohammed - Just Keep Repeating (Official Acapella Video)", title: "Just Keep Repeating", artist: "Nadeem Mohammed", image: "images/Nasheed.png" },
+      { name: "Nadeem Mohammed - SubhanAllah (Official Acapella Video)", title: "SubhanAllah", artist: "Nadeem Mohammed", image: "images/Nasheed.png" },
+      { name: "Nasheed by Labbayk - Prelude Track", title: "Nasheed by Labbayk (Prelude Track)", artist: "Labbayk", image: "images/Nasheed.png" },
+      { name: "Nasheed Taballah - Darb al Saleen", title: "Darb al Saleen", artist: "Nasheed Taballah", image: "images/Nasheed.png" },
+      { name: "No God But Allah - EXCLUSIVE NASHEED", title: "No God But Allah", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "Oh My Lord - Heart Warming Nasheed", title: "Oh My Lord", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "Omar Esa - Dawah Ft. Muslim Belal (Official Nasheed Video)", title: "Dawah", artist: "Omar Esa Ft. Muslim Belal", image: "images/Nasheed.png" },
+      { name: "Omar Esa - Kun Anta - Be Yourself (Omar Esa Version)", title: "Kun Anta - Be Yourself", artist: "Omar Esa", image: "images/Nasheed.png" },
+      { name: "Omar Esa - Rabb (Official Nasheed Video)", title: "Rabb", artist: "Omar Esa", image: "images/Nasheed.png" },
+      { name: "Omar Esa - Remembrance of Allah", title: "Remembrance of Allah", artist: "Omar Esa", image: "images/Nasheed.png" },
+      { name: "Omar Esa - Tera Pyaar  Your Love  (Official Nasheed Video)", title: "Tera Pyaar (Your Love)", artist: "Omar Esa", image: "images/Nasheed.png" },
+      { name: "Qamarun", title: "Qamarun", artist: "Mikhael Mala", image: "images/Nasheed.png" },
+      { name: "Qasidah Burdah by Labbayk", title: "Qasidah Burdah", artist: "Labbayk", image: "images/Nasheed.png" },
+      { name: "Qasidah Burdah nasheed", title: "Qasidah Burdah", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "Ramadan Is My Life - Amazing Nasheed", title: "Ramadan Is My Life", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "Rawaa' Beautiful Nasheed By Raid al-Qahtani", title: "Rawaa'", artist: "Raid al-Qahtani", image: "images/Nasheed.png" },
+      { name: "Rhamzan - Seyifunmi (Official Nasheed Video)  No Music", title: "Seyifunmi (No Music)", artist: "Rhamzan", image: "images/Nasheed.png" },
+      { name: "Sharey Tin Haat - Ali Gulam - O My Lord (Bangla)", title: "Sharey Tin Haat", artist: "Ali Gulam", image: "images/Nasheed.png" },
+      { name: "SUBHAN ALLAH - NASHEED - SUBHAN ALLAH - NASHEED", title: "SUBHAN ALLAH", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "SYRIA - Very Powerful Emotional Nasheed", title: "SYRIA (Powerful Emotional)", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "TEAR AFTER TEAR - EMOTIONAL NASHEED", title: "TEAR AFTER TEAR", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "Testify (Islam) - Exclusive Nasheed By- Omar Esa", title: "Testify (Islam)", artist: "Omar Esa", image: "images/Nasheed.png" },
+      { name: "The Beauty of Existence - Heart Touching Nasheed", title: "The Beauty of Existence", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "The Broken By Muhammad Al Muqit - New Nasheed", title: "The Broken", artist: "Muhammad Al Muqit", image: "images/Nasheed.png" },
+      { name: "The Feelings of Love - Muhammad al-Muqit", title: "The Feelings of Love", artist: "Muhammad al-Muqit", image: "images/Nasheed.png" },
+      { name: "The Good Is Still Alive - Beautiful Nasheed", title: "The Good Is Still Alive", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "The Land of al-Haram ᴴᴰ - Powerful Nasheed - By- Muhammad al-Muqit", title: "The Land of al-Haram", artist: "Muhammad al Muqit", image: "images/Nasheed.png" },
+      { name: "The Right Way - Powerful Vocal Nasheed", title: "The Right Way", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "The Way of The Tears - Exclusive Nasheed - Muhammad al Muqit", title: "The Way of The Tears", artist: "Muhammad al Muqit", image: "images/Nasheed.png" },
+      { name: "They Passed Through Here - Inspirational Nasheed", title: "They Passed Through Here", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "Tum Hi Ho (Muslim Version by Omar Esa)", title: "Tum Hi Ho (Muslim Version)", artist: "Omar Esa", image: "images/Nasheed.png" },
+      { name: "We Rise to The Sky - Nasheed By Ahmad Al Muqit", title: "We Rise to The Sky", artist: "Ahmad Al Muqit", image: "images/Nasheed.png" },
+      { name: "Were Going Home - Heart Touching Nasheed", title: "Were Going Home", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "Where I Find Rest - Powerful Nasheed - Muhammad Al-Muqit", title: "Where I Find Rest", artist: "Muhammad Al-Muqit", image: "images/Nasheed.png" },
+      { name: "Withered Leaves - Peaceful Nasheed", title: "Withered Leaves", artist: "Unknown", image: "images/Nasheed.png" },
+      { name: "Ya Ilahi - Powerful Nasheed By Ishaq Ayubi", title: "Ya Ilahi", artist: "Ishaq Ayubi", image: "images/Nasheed.png" },
+      { name: "You're My Wife Alhumdullilah by Omar Esa - Typography", title: "You're My Wife (Typography)", artist: "Omar Esa", image: "images/Nasheed.png" },
+      { name: "Yusuf Islam - Tala Al Badru Alayna", title: "Tala Al Badru Alayna", artist: "Yusuf Islam", image: "images/Nasheed.png" },
+      { name: "Zain Bhikha - I Am A Muslim (Lyric Video)", title: "I Am A Muslim", artist: "Zain Bhikha", image: "images/Nasheed.png" },
+      { name: "Zain Bhikha-Give Thanks To Allah", title: "Give Thanks To Allah", artist: "Zain Bhikha", image: "images/Nasheed.png" },
+      { name: "Zain Bhikha-Mountains Of Makkah", title: "Mountains Of Makkah", artist: "Zain Bhikha", image: "images/Nasheed.png" },
+      { name: "Zain Bhikha-My Mum is Amazing", title: "My Mum is Amazing", artist: "Zain Bhikha", image: "images/Nasheed.png" }
+    ];
+ 
+
+    // Player state
+    let isPlaying = false;
+    let songIndex = 0;
+
+    // Load song (do not reassign DOM refs)
+    function loadSong(song) {
+      titleEl.textContent = song.title || song.name;
+      artistEl.textContent = song.artist || "Unknown";
+      img.src = song.image || "images/Nasheed.png";
+      // Use encodeURIComponent to safely build the URL (handles spaces, quotes, etc.)
+      music.src = `music/${encodeURIComponent(song.name)}.mp3`;
+      music.onended = nextSong;
+    }
+
+    function playMusic() {
+      isPlaying = true;
+      music.play();
+      play.classList.replace("fa-play", "fa-pause");
+      img.classList.add("anime");
+    }
+
+    function pauseMusic() {
+      isPlaying = false;
+      music.pause();
+      play.classList.replace("fa-pause", "fa-play");
+      img.classList.remove("anime");
+    }
+
+    play.addEventListener("click", () => {
+      isPlaying ? pauseMusic() : playMusic();
+    });
+
+    function nextSong() {
+      songIndex = (songIndex + 1) % songs.length;
+      loadSong(songs[songIndex]);
+      playMusic();
+    }
+
+    function prevSong() {
+      songIndex = (songIndex - 1 + songs.length) % songs.length;
+      loadSong(songs[songIndex]);
+      playMusic();
+    }
+
+    // Progress update
+    music.addEventListener("timeupdate", (event) => {
+      const { currentTime, duration } = event.srcElement;
+      if (!duration) return;
+      const progress_time = (currentTime / duration) * 100;
+      progress.style.width = `${progress_time}%`;
+
+      // duration
+      let min_total = Math.floor(duration / 60);
+      let sec_total = Math.floor(duration % 60);
+      if (isNaN(min_total) || isNaN(sec_total)) {
+        durationElement.textContent = "0:00";
+      } else {
+        if (sec_total < 10) sec_total = `0${sec_total}`;
+        durationElement.textContent = `${min_total}:${sec_total}`;
+      }
+
+      // current time
+      let min_current = Math.floor(currentTime / 60);
+      let sec_current = Math.floor(currentTime % 60);
+      if (sec_current < 10) sec_current = `0${sec_current}`;
+      current_time.textContent = `${min_current}:${sec_current}`;
+    });
+
+    // Seek on click
+    progress_div.addEventListener("click", (event) => {
+      const { duration } = music;
+      if (!duration) return;
+      const move_progress = (event.offsetX / event.srcElement.clientWidth) * duration;
+      music.currentTime = move_progress;
+    });
+
+    nextBtn.addEventListener("click", nextSong);
+    prevBtn.addEventListener("click", prevSong);
+
+    // initialize
+    if (songs.length) {
+      loadSong(songs[songIndex]);
+    } else {
+      titleEl.textContent = "No songs found";
+      artistEl.textContent = "";
+    }
+  </script>
+</body>
+
+</html>
